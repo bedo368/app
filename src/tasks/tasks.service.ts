@@ -4,6 +4,7 @@ import { ITaskRepository } from './repo/type.rpo.interface';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskStatus } from './task.model';
 import { TaskEnetity } from './entitis/task.entity';
+import { GetTasksFilterDto } from './dto/get-tasks.dto';
 
 @Injectable()
 export class TasksService {
@@ -14,8 +15,8 @@ export class TasksService {
   /**
    * Retrieve all tasks.
    */
-  async getTasks(): Promise<TaskEnetity[]> {
-    return this.taskRepository.getAllTasks();
+  async getTasks(getTasksDto: GetTasksFilterDto ): Promise<TaskEnetity[]> {
+    return this.taskRepository.getAllTasks(getTasksDto);
   }
 
   /**

@@ -2,7 +2,7 @@ import { TaskStatus } from "src/tasks/task.model";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class TaskEnetity {
+export class TaskEnetity  {
   @PrimaryGeneratedColumn("uuid")
   id: string
   @Column()
@@ -11,4 +11,6 @@ export class TaskEnetity {
   description: string
   @Column()
   status: TaskStatus
+
+
 }

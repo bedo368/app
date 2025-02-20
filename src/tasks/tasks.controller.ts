@@ -1,3 +1,4 @@
+import { get } from 'http';
 import { 
   Body, 
   Controller, 
@@ -7,12 +8,15 @@ import {
   Param, 
   Patch, 
   Post, 
-  Put 
+  Put, 
+  Query
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskStatusDto } from './dto/update-task-status.dto';
 import { UpdateTaskDto } from './dto/update-task.dto copy';
+import { GetTasksFilterDto as GetTasksFilterDto } from './dto/get-tasks.dto';
+import { log } from 'console';
 
 @Controller('tasks')
 export class TasksController {
@@ -20,14 +24,17 @@ export class TasksController {
 
   @Get()
   @HttpCode(200)
-  async getTasks() {
-    const tasks = await this.tasksService.getTasks();
+  async getTasks(@Query()  getTasksDto: GetTasksFilterDto) {
+    console.log(getTasksDto);
+    const tasks = await this.tasksService.getTasks(getTasksDto);
     return {
       success: true,
       message: 'Tasks retrieved successfully.',
       data: {
         tasks,
-        total: tasks.length, // placed inside data
+        total: tasks.length, // placed inside data,
+        page: getTasksDto.page ? Number(getTasksDto.page) : undefined ,
+        limit: getTasksDto.page ? 10 : undefined
       },
     };
   }
