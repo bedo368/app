@@ -1,0 +1,280 @@
+{
+  "info": {
+    "_postman_id": "ef53d11b-8d4b-4da5-b952-123456789abc",
+    "name": "Tasks API",
+    "description": "A Postman collection to test the NestJS Tasks endpoints. Each request includes documentation and tests.\n\nEnvironment Variable:\n - baseUrl: The base URL of your API (e.g., http://localhost:3000)\n - taskId: Set automatically after creating a task.\n\nUsage:\n - Create a task first.\n - Postman will store the new task's ID in the 'taskId' variable.\n - Subsequent requests (Get by ID, Update, Patch, Delete) rely on that task ID.\n",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Tasks",
+      "request": {
+        "description": "Retrieve all tasks from the server.\n\n**Method**: GET\n**Endpoint**: /tasks\n**Status**: 200 OK",
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": [
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});",
+            "",
+            "let jsonData = pm.response.json();",
+            "pm.test(\"Response has success=true\", function () {",
+            "    pm.expect(jsonData).to.have.property('success', true);",
+            "});",
+            "pm.test(\"Response has data field\", function () {",
+            "    pm.expect(jsonData).to.have.property('data');",
+            "});"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Create New Task",
+      "request": {
+        "description": "Create a new task.\n\n**Method**: POST\n**Endpoint**: /tasks/create-task\n**Body**:\n```json\n{\n  \"title\": \"My New Task\",\n  \"description\": \"Task description\",\n  \"status\": \"OPEN\"\n}\n```\n**Status**: 201 Created",
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"My New Task\",\n  \"description\": \"Sample task description\",\n  \"status\": \"OPEN\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tasks/create-task",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks",
+            "create-task"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": [
+            "// Check the status code",
+            "pm.test(\"Status code is 201\", function () {",
+            "    pm.response.to.have.status(201);",
+            "});",
+            "",
+            "// Parse the JSON response",
+            "let jsonData = pm.response.json();",
+            "",
+            "// Basic structural tests",
+            "pm.test(\"Response has success=true\", function () {",
+            "    pm.expect(jsonData).to.have.property('success', true);",
+            "});",
+            "pm.test(\"Response has message\", function () {",
+            "    pm.expect(jsonData).to.have.property('message');",
+            "});",
+            "pm.test(\"Response has data\", function () {",
+            "    pm.expect(jsonData).to.have.property('data');",
+            "});",
+            "",
+            "// Store the newly created task ID for subsequent requests",
+            "if (jsonData.data && jsonData.data.createdTask) {",
+            "    let taskId = jsonData.data.createdTask.id;",
+            "    pm.environment.set(\"taskId\", taskId);",
+            "    pm.test(\"taskId stored in environment\", function () {",
+            "        pm.expect(taskId).to.be.a('string');",
+            "    });",
+            "} else {",
+            "    pm.test(\"No createdTask ID found\", function () {",
+            "        pm.expect.fail(\"No createdTask ID was found in the response\");",
+            "    });",
+            "}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Get Task By ID",
+      "request": {
+        "description": "Retrieve a single task by its ID.\n\n**Method**: GET\n**Endpoint**: /tasks/:id\n**Path Variable**: id (use {{taskId}} from environment)\n**Status**: 200 OK",
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks/{{taskId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks",
+            "{{taskId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": [
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});",
+            "",
+            "let jsonData = pm.response.json();",
+            "",
+            "pm.test(\"Response has success=true\", function () {",
+            "    pm.expect(jsonData).to.have.property('success', true);",
+            "});",
+            "pm.test(\"Response has task object\", function () {",
+            "    pm.expect(jsonData.data).to.have.property('task');",
+            "});"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Update Task",
+      "request": {
+        "description": "Update a task's title, description, and status.\n\n**Method**: PUT\n**Endpoint**: /tasks/:id\n**Path Variable**: id (use {{taskId}})\n**Body**:\n```json\n{\n  \"title\": \"Updated Task Title\",\n  \"description\": \"Updated Task Description\",\n  \"status\": \"IN_PROGRESS\"\n}\n```\n**Status**: 200 OK",
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Task Title\",\n  \"description\": \"Updated Task Description\",\n  \"status\": \"IN_PROGRESS\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tasks/{{taskId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks",
+            "{{taskId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": [
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});",
+            "",
+            "let jsonData = pm.response.json();",
+            "",
+            "pm.test(\"Response has success=true\", function () {",
+            "    pm.expect(jsonData).to.have.property('success', true);",
+            "});",
+            "pm.test(\"Response has updatedTask object\", function () {",
+            "    pm.expect(jsonData.data).to.have.property('updatedTask');",
+            "});"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Update Task Status (PATCH)",
+      "request": {
+        "description": "Update only the status of a task.\n\n**Method**: PATCH\n**Endpoint**: /tasks/:id/status\n**Path Variable**: id (use {{taskId}})\n**Body**:\n```json\n{\n  \"status\": \"DONE\"\n}\n```\n**Status**: 200 OK",
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"DONE\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/tasks/{{taskId}}/status",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks",
+            "{{taskId}}",
+            "status"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": [
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});",
+            "",
+            "let jsonData = pm.response.json();",
+            "pm.test(\"Response has success=true\", function () {",
+            "    pm.expect(jsonData).to.have.property('success', true);",
+            "});",
+            "pm.test(\"Response has updatedTask object\", function () {",
+            "    pm.expect(jsonData.data).to.have.property('updatedTask');",
+            "});"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Delete Task",
+      "request": {
+        "description": "Delete a task by its ID.\n\n**Method**: DELETE\n**Endpoint**: /tasks/:id\n**Path Variable**: id (use {{taskId}})\n**Status**: 200 OK",
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/tasks/{{taskId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "tasks",
+            "{{taskId}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": [
+            "pm.test(\"Status code is 200\", function () {",
+            "    pm.response.to.have.status(200);",
+            "});",
+            "",
+            "let jsonData = pm.response.json();",
+            "",
+            "pm.test(\"Response has success=true\", function () {",
+            "    pm.expect(jsonData).to.have.property('success', true);",
+            "});",
+            "pm.test(\"Response has message for deletion\", function () {",
+            "    pm.expect(jsonData).to.have.property('message');",
+            "});",
+            "",
+            "// Clear the environment variable since the task is deleted",
+            "pm.environment.unset(\"taskId\");"
+          ]
+        }
+      ]
+    }
+  ]
+}
+
