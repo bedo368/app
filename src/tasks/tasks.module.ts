@@ -9,7 +9,6 @@ import { TasksController } from './tasks.controller';
 @Module({
   imports: [
     // ضروري لكي يتعرّف NestJS وTypeORM على الكيان TaskEntity
-    TypeOrmModule.forFeature([TaskEnetity]),
 
   ],
   controllers:[TasksController],
