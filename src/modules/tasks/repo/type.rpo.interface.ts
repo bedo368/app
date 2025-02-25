@@ -1,4 +1,4 @@
-import { GetTasksFilterDto } from './../dto/get-tasks.dto';
+import { GetTasksFilterDto } from '../dto/get-tasks.dto';
 import { get } from 'http';
 // task.repository.interface.ts
 import { Repository } from 'typeorm';

@@ -1,4 +1,4 @@
-import { TaskEnetity } from 'src/tasks/entitis/task.entity';
+import { TaskEnetity } from 'src/modules/tasks/entitis/task.entity';
 
 export class UserModel {
   id: string;

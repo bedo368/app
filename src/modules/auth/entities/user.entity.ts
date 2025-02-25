@@ -1,4 +1,4 @@
-import { TaskEnetity as TaskEntity } from "src/tasks/entitis/task.entity";
+import { TaskEnetity as TaskEntity } from "src/modules/tasks/entitis/task.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity()

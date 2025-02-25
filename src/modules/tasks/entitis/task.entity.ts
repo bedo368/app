@@ -1,6 +1,6 @@
-import { TaskStatus } from "src/tasks/task.model";
+import { TaskStatus } from "src/modules/tasks/task.model";
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-import {UserEntity} from "src/auth/entities/user.entity"
+import {UserEntity} from "src/modules/auth/entities/user.entity"
 @Entity()
 export class TaskEnetity  {
   @PrimaryGeneratedColumn("uuid")

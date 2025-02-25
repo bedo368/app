@@ -1,7 +1,7 @@
 import { UnauthorizedException } from '@nestjs/common';
-import { UserModel } from 'src/auth/models/user.model';
+import { UserModel } from 'src/modules/auth/models/user.model';
 import * as bcrypt from 'bcrypt';
-import { UserEntity } from 'src/auth/entities/user.entity';
+import { UserEntity } from 'src/modules/auth/entities/user.entity';
 
 export async function checkUserPassword(
   user: UserEntity,

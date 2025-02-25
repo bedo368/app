@@ -1,5 +1,5 @@
-import { SignInUserDto } from './../dto/get_user.dto';
-import { CreateUserDto } from './../dto/create_user.dto';
+import { SignInUserDto } from '../dto/get_user.dto';
+import { CreateUserDto } from '../dto/create_user.dto';
 import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserEntity } from '../entities/user.entity';
 import { USERAUTHREPO } from '../providers/auth.provider';
@@ -12,7 +12,7 @@ import { genrateEncriptedPassword } from 'src/core/functions/genrate_encripted_p
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject(USERAUTHREPO) private readonly taskRepository: UserAuthInterface,
+    @Inject(USERAUTHREPO) private readonly userRepo: UserAuthInterface,
     private jwtService: JwtService,
   ) {}
 
@@ -21,7 +21,7 @@ export class AuthService {
 
     const hashedPassword = await genrateEncriptedPassword(password);
 
-    await this.taskRepository.createNewUser(userName, hashedPassword, name);
+    await this.userRepo.createNewUser(userName, hashedPassword, name);
 
     return { message: 'User created successfully' };
   }
@@ -29,7 +29,7 @@ export class AuthService {
   async singIn(getUserDto: SignInUserDto): Promise<UserModel> {
     console.log('signin');
 
-    const user = await this.taskRepository.getUser(getUserDto.userName);
+    const user = await this.userRepo.getUser(getUserDto.userName);
 
     const res = await checkUserPassword(user, getUserDto.password);
 
